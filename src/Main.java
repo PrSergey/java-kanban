@@ -6,17 +6,17 @@ public class Main {
 
         Epic epic1 = new Epic("пробная", "эпик номер 1");
         manager.add(epic1);
-        Subtask subtask2 = new Subtask("пробная подзадача 1", "подзадача для эпик 1", 1, "NEW");
-        Subtask subtask3 = new Subtask("пробная подзадача 2", "подзадача для эпик 1", 1, "DONE");
-        manager.add(subtask2, 1);
-        manager.add(subtask3, 1);
-        manager.statusEpic(1);
+        Subtask subtask2 = new Subtask("пробная подзадача 1", "подзадача для эпик 1", epic1.getId(), "NEW");
+        Subtask subtask3 = new Subtask("пробная подзадача 2", "подзадача для эпик 1", epic1.getId(), "DONE");
+        manager.add(subtask2, epic1.getId());
+        manager.add(subtask2, epic1.getId());
+        manager.updateEpicStatus(1);
 
         Epic epic2 = new Epic("пробная", "эпик номер 2");
         manager.add(epic2);
-        Subtask subtask5 = new Subtask("пробная подзадача 1", "подзадача для эпик 1", 4, "DONE");
-        manager.add(subtask5, 4);
-        manager.statusEpic(4);
+        Subtask subtask5 = new Subtask("пробная подзадача 1", "подзадача для эпик 1", epic2.getId(), "DONE");
+        manager.add(subtask5, epic2.getId());
+        manager.updateEpicStatus( epic2.getId());
         Epic epic3 = new Epic("пробная", "эпик номер 3");
         manager.add(epic3);
         System.out.println(epic1.toString());
@@ -29,10 +29,10 @@ public class Main {
         System.out.println("Все эпики "+manager.getEpics() + "\n" +"Все подзадачи " + manager.getSubtasks());
         System.out.println(manager.sybtaskByEpic(1));
 
-        subtask3.status = "NEW";
+        subtask2.status = "DONE";
         manager.updateEpic(epic1);
         System.out.println("\n" + "Изменение статуса пода задачи и следовательно эпика" + "\n" + epic1.toString());
-        System.out.println(subtask3.toString());
+        System.out.println(subtask2.toString());
 
         manager.removeEpicById(1);
         manager.removeSubtaskById(3);

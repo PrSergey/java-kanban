@@ -23,23 +23,23 @@ public class Manager {
     public void add(Subtask taskIn, int epicId) {
         taskIn.setId(id++);
         subtasks.put(taskIn.getId(), taskIn);
-        epics.get(epicId).subtaskId.add(taskIn.getId());
-        statusEpic(epicId);
+        epics.get(epicId).getSubtaskId().add(taskIn.getId());
+        updateEpicStatus(epicId);
     }
 
-    public void statusEpic(int epicId) {
+    public void updateEpicStatus(int epicId) {
         String status="";
-        if (epics.get(epicId).subtaskId.isEmpty()){
+        if (epics.get(epicId).getSubtaskId().isEmpty()){
             status="NEW";
             return;
         }
-        status=subtasks.get(epics.get(epicId).subtaskId.get(0)).status;
+        status=subtasks.get(epics.get(epicId).getSubtaskId().get(0)).status;
 
-        for (Integer idSubtask: epics.get(epicId).subtaskId){
+        for (Integer idSubtask: epics.get(epicId).getSubtaskId()){
             if (!status.equals(subtasks.get(idSubtask).status)){
                 epics.get(epicId).status="IN_PROGRESS";
             }else{
-                epics.get(epicId).status= subtasks.get(epics.get(epicId).subtaskId.get(0)).status;
+                epics.get(epicId).status= subtasks.get(epics.get(epicId).getSubtaskId().get(0)).status;
             }
         }
     }
@@ -108,7 +108,7 @@ public class Manager {
         int epicId = subtasks.get(needId).epicId;
         subtasks.remove(needId);
         if (epics.containsValue(epicId)){
-            epics.get(epicId).subtaskId.remove(needId);
+            epics.get(epicId).getSubtaskId().remove(needId);
         }
     }
 
@@ -119,16 +119,16 @@ public class Manager {
 
     public void updateEpic(Epic task) {
         epics.put(task.id, task);
-        statusEpic(task.id);
+        updateEpicStatus(task.id);
     }
 
     public void updateSubtask(Subtask task) {
         subtasks.put(task.id, task);
-        statusEpic(task.epicId);
+        updateEpicStatus(task.epicId);
     }
 
     public ArrayList<Integer> sybtaskByEpic(int epicId) {
-        return epics.get(epicId).subtaskId;
+        return epics.get(epicId).getSubtaskId();
     }
 
 }

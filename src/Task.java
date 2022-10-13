@@ -1,4 +1,4 @@
-
+import java.util.Objects;
 
 public class Task {
 
@@ -7,6 +7,9 @@ public class Task {
     protected String description;
 
     protected int id;
+
+
+
     protected String status;
     public Task(String title, String description) {
         this.title = title;
@@ -51,7 +54,18 @@ public class Task {
 
         this.description = description;
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id && title.equals(task.title) && description.equals(task.description) && status.equals(task.status);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, description, id, status);
+    }
     @Override
     public String toString() {
         return "Task{" +
