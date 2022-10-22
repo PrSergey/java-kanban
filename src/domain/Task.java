@@ -11,12 +11,13 @@ public class Task {
     protected int id;
 
 
-
     protected Status status;
+
     public Task(String title, String description) {
         this.title = title;
         this.description = description;
     }
+
     public Status getStatus() {
         return status;
     }
@@ -25,7 +26,6 @@ public class Task {
 
         this.status = status;
     }
-
 
 
     public int getId() {

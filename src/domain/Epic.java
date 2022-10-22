@@ -5,8 +5,7 @@ import java.util.List;
 
 
 public class Epic extends Task {
-    List<Integer> subtaskId=new ArrayList<>();
-
+    List<Integer> subtaskId = new ArrayList<>();
 
 
     public Epic(String title, String description) {

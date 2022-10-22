@@ -8,13 +8,11 @@ import java.util.List;
 public interface TaskManager {
 
 
-
-
     public void add(Task taskIn);
+
     public void add(Epic taskIn);
 
     public void add(Subtask taskIn, int epicId);
-
 
 
     public void updateEpicStatus(int epicId);

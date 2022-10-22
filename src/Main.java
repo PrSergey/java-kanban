@@ -5,7 +5,9 @@ import domain.Subtask;
 public class Main {
 
     public static void main(String[] args) {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
+        Managers managerType = new Managers();
+        TaskManager manager = managerType.getDefault();
+
 
         Epic epic1 = new Epic("пробная", "эпик номер 1");
         manager.add(epic1);
@@ -19,7 +21,7 @@ public class Main {
         manager.add(epic2);
         Subtask subtask5 = new Subtask("пробная подзадача 1", "подзадача для эпик 1", epic2.getId(), Status.DONE);
         manager.add(subtask5, epic2.getId());
-        manager.updateEpicStatus( epic2.getId());
+        manager.updateEpicStatus(epic2.getId());
         Epic epic3 = new Epic("пробная", "эпик номер 3");
         manager.add(epic3);
         System.out.println(epic1.toString());
@@ -29,7 +31,7 @@ public class Main {
         System.out.println(subtask3.toString());
         System.out.println(subtask5.toString());
 
-        System.out.println("Все эпики "+manager.getEpics() + "\n" +"Все подзадачи " + manager.getSubtasks());
+        System.out.println("Все эпики " + manager.getEpics() + "\n" + "Все подзадачи " + manager.getSubtasks());
         System.out.println(manager.subtaskByEpic(1));
 
         subtask2.setStatus(Status.DONE);
@@ -51,7 +53,6 @@ public class Main {
 
         System.out.println("Просмотр эпиков");
         manager.getEpicById(4);
-
         manager.getEpicById(1);
         manager.getEpicById(1);
         manager.getEpicById(1);
@@ -64,7 +65,6 @@ public class Main {
         // manager.getSubtaskById(5);
 
 
-        System.out.println(manager.history.getHistoryTasks());
     }
 
 }
