@@ -39,17 +39,17 @@ public class Main {
         System.out.println("\n" + "Изменение статуса пода задачи и следовательно эпика" + "\n" + epic1.toString());
         System.out.println(subtask2.toString());
 
-        /*manager.removeEpicById(1);
+       /* manager.removeEpicById(1);
         manager.removeSubtaskById(3);
         System.out.println("\n"+"Удаление эпика №1 и подзадачи №3" + "\n" + manager.getEpics() + "\n" +
                 manager.getSubtasks());
 
         manager.removeEpics();
-        manager.removeTask();
+        manager.removeTasks();
         manager.removeSubtasks();
         System.out.println("\n"+"Удаление всех эпиков, подзадач и задач" + "\n" +"Все эпики "+ manager.getEpics() + "\n" +
-                "Все подзадачи "+manager.getSubtasks()+ "\n" + "Все задачи "+manager.getSimpleTasks());
-*/
+                "Все подзадачи "+manager.getSubtasks()+ "\n" + "Все задачи "+manager.getTasks());
+        */
 
         System.out.println("Просмотр эпиков");
         manager.getEpicById(4);
@@ -61,10 +61,15 @@ public class Main {
         manager.getEpicById(1);
         manager.getEpicById(1);
         manager.getSubtaskById(3);
-        manager.getSubtaskById(2);
-        // manager.getSubtaskById(5);
+        manager.getEpicById(1);
+        manager.getSubtaskById(5);
+        manager.getEpicById(4);
 
 
     }
 
 }
+
+
+
+

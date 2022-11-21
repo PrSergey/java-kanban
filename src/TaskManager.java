@@ -2,51 +2,51 @@ import domain.Epic;
 import domain.Subtask;
 import domain.Task;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 public interface TaskManager {
 
 
-    public void add(Task taskIn);
+    void add(Task taskIn);
 
-    public void add(Epic taskIn);
+    void add(Epic taskIn);
 
-    public void add(Subtask taskIn, int epicId);
+    void add(Subtask taskIn, int epicId);
 
 
-    public void updateEpicStatus(int epicId);
+    void updateEpicStatus(int epicId);
 
-    public List getSimpleTasks();
+    List getTasks();
 
-    public List getEpics();
+    List getEpics();
 
-    public List getSubtasks();
+    List getSubtasks();
 
-    public void removeTask();
+    void removeTasks();
 
-    public void removeEpics();
+    void removeEpics();
 
-    public void removeSubtasks();
+    void removeSubtasks();
 
-    public Task getTaskById(int needId);
+    Task getTaskById(int needId);
 
-    public Task getSubtaskById(int needId);
+    Task getSubtaskById(int needId);
 
-    public Task getEpicById(int needId);
+    Task getEpicById(int needId);
 
-    public void removeTaskById(int needId);
+    void removeTaskById(int needId);
 
-    public void removeEpicById(int needId);
+    void removeEpicById(int needId);
 
-    public void removeSubtaskById(int needId);
+    void removeSubtaskById(int needId);
 
-    public void updateTask(Task task);
+    void updateTask(Task task);
 
-    public void updateEpic(Epic task);
+    void updateEpic(Epic task);
 
-    public void updateSubtask(Subtask task);
+    void updateSubtask(Subtask task);
 
-    public List<Integer> subtaskByEpic(int epicId);
+    List<Integer> subtaskByEpic(int epicId);
 
 }

@@ -1,11 +1,15 @@
 import domain.Task;
 
-import java.util.List;
+
+import java.util.Map;
+
 
 public interface HistoryManager {
-    public void addHistoryTasks(Task task);
+    void addHistoryTasks(Task task);
 
-    public List<Task> getHistoryTasks();
+    void remove(int id);
+
+    Map<Integer, InMemoryHistoryManager.Node> getHistoryTasks();
 
 
 }
