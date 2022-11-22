@@ -1,7 +1,9 @@
+package managers;
+
 import domain.Task;
 
 
-import java.util.Map;
+import java.util.List;
 
 
 public interface HistoryManager {
@@ -9,7 +11,7 @@ public interface HistoryManager {
 
     void remove(int id);
 
-    Map<Integer, InMemoryHistoryManager.Node> getHistoryTasks();
+    List<Task> getHistoryTasks();
 
 
 }

@@ -1,7 +1,11 @@
+package managers;
+
 import domain.Task;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import java.util.List;
 import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
@@ -9,11 +13,21 @@ public class InMemoryHistoryManager implements HistoryManager {
     Node firstTask;
     Node lastTask;
     Map<Integer, Node> historyTasks = new HashMap<>();
+    List<Task> sortedHistoryTask = new ArrayList<>();
+
 
     @Override
-
-    public Map<Integer, Node> getHistoryTasks() {
-        return historyTasks;
+    public List<Task> getHistoryTasks() {
+        sortedHistoryTask.clear();
+        Node next = firstTask.next;
+        sortedHistoryTask.add(firstTask.data);
+        Node nextTask = firstTask.next;
+        while (next != null) {
+            sortedHistoryTask.add(nextTask.data);
+            next = nextTask.next;
+            nextTask = nextTask.next;
+        }
+        return sortedHistoryTask;
     }
 
 
@@ -36,7 +50,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void remove(int id) {
         Node removeTask = historyTasks.get(id);
-        if (removeTask==null){
+        if (removeTask == null) {
             return;
         }
         if (removeTask.equals(firstTask)) {
@@ -60,6 +74,28 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
         lastTask = newNode;
 
+    }
+//    @Override
+//    public String toString() {
+//       getHistoryTasks();
+//        final StringBuilder sb = new StringBuilder("managers.InMemoryHistoryManager{");
+//        sb.append("sortedTHistoryTask=").append(sortedHistoryTask);
+//        sb.append('}');
+//        return sb.toString();
+//    }
+
+    @Override
+    public String toString() {
+        getHistoryTasks();
+        StringBuilder sb = new StringBuilder();
+        int numberCallTask = 0;
+        for (Task task : sortedHistoryTask) {
+            numberCallTask++;
+            sb.append(numberCallTask + " была вызвана задача с id: " + task.getId() +
+                    "\n");
+
+        }
+        return sb.toString();
     }
 
 

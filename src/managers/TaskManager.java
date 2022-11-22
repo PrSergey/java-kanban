@@ -1,6 +1,9 @@
+package managers;
+
 import domain.Epic;
 import domain.Subtask;
 import domain.Task;
+import managers.HistoryManager;
 
 
 import java.util.List;
@@ -17,11 +20,11 @@ public interface TaskManager {
 
     void updateEpicStatus(int epicId);
 
-    List getTasks();
+    List<Task> getTasks();
 
-    List getEpics();
+    List<Task> getEpics();
 
-    List getSubtasks();
+    List<Task> getSubtasks();
 
     void removeTasks();
 
@@ -49,4 +52,6 @@ public interface TaskManager {
 
     List<Integer> subtaskByEpic(int epicId);
 
+    HistoryManager getHistory();
 }
+
