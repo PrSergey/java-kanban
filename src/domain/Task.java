@@ -1,5 +1,7 @@
 package domain;
 
+import managers.TaskType;
+
 import java.util.Objects;
 
 public class Task {
@@ -12,12 +14,27 @@ public class Task {
 
 
     protected Status status;
+    protected TaskType type;
+    public Task( int id, TaskType type, String title, Status status, String description) {
+
+        this.title = title;
+        this.description = description;
+        this.id = id;
+        this.status = status;
+        this.type = type;
+    }
 
     public Task(String title, String description) {
         this.title = title;
         this.description = description;
     }
+    public TaskType getType() {
+        return type;
+    }
 
+    public void setType(TaskType type) {
+        this.type = type;
+    }
     public Status getStatus() {
         return status;
     }

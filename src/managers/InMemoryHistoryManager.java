@@ -15,6 +15,30 @@ public class InMemoryHistoryManager implements HistoryManager {
     Map<Integer, Node> historyTasks = new HashMap<>();
     List<Task> sortedHistoryTask = new ArrayList<>();
 
+    List<Integer> historyId = new ArrayList<>();
+
+
+    public List<Task> getSortedHistoryTask() {
+        return sortedHistoryTask;
+    }
+
+    public List<Integer> getHistoryId() {
+        sortedHistoryId();
+        return historyId;
+    }
+
+    public List<Integer> sortedHistoryId() {
+        historyId.clear();
+        Node next = firstTask.next;
+        historyId.add(firstTask.data.getId());
+        Node nextTask = firstTask.next;
+        while (next != null) {
+            historyId.add(nextTask.data.getId());
+            next = nextTask.next;
+            nextTask = nextTask.next;
+        }
+        return historyId;
+    }
 
     @Override
     public List<Task> getHistoryTasks() {
@@ -43,6 +67,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
         linkLast(task);
         historyTasks.put(taskId, lastTask);
+
 
     }
 

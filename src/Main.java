@@ -4,10 +4,14 @@ import domain.Subtask;
 import managers.Managers;
 import managers.TaskManager;
 
+import java.io.File;
+
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager manager = Managers.getDefault();
+        File file=new File("task.csv");
+
+        TaskManager manager = Managers.getDefaultFile(file);
 
 
         Epic epic1 = new Epic("пробная", "эпик номер 1");
@@ -20,7 +24,7 @@ public class Main {
 
         Epic epic2 = new Epic("пробная", "эпик номер 2");
         manager.add(epic2);
-        Subtask subtask5 = new Subtask("пробная подзадача 1", "подзадача для эпик 1", epic2.getId(), Status.DONE);
+        Subtask subtask5 = new Subtask("пробная подзадача 3", "подзадача для эпик 4", epic2.getId(), Status.DONE);
         manager.add(subtask5, epic2.getId());
         manager.updateEpicStatus(epic2.getId());
         Epic epic3 = new Epic("пробная", "эпик номер 3");
@@ -37,7 +41,7 @@ public class Main {
 
         subtask2.setStatus(Status.DONE);
         manager.updateEpic(epic1);
-        System.out.println("\n" + "Изменение статуса пода задачи и следовательно эпика" + "\n" + epic1.toString());
+        System.out.println("\n" + "Изменение статуса подзадачи и следовательно эпика" + "\n" + epic1.toString());
         System.out.println(subtask2.toString());
 
        /* manager.removeEpicById(1);
@@ -52,7 +56,8 @@ public class Main {
         */
 
 
-        //Строки ниже делал, чтобы наполнить историю и проверить корректность работы.
+
+
         System.out.println("Просмотр эпиков");
         manager.getEpicById(epic3.getId());
         manager.getEpicById(epic1.getId());
@@ -67,7 +72,8 @@ public class Main {
         manager.getSubtaskById(subtask3.getId());
         manager.getEpicById(epic2.getId());
 
-        System.out.println(manager.getHistory().toString());
+        System.out.println(manager.getHistory().getSortedHistoryTask());
+
 
     }
 

@@ -3,7 +3,9 @@ package managers;
 import domain.Task;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public interface HistoryManager {
@@ -12,6 +14,10 @@ public interface HistoryManager {
     void remove(int id);
 
     List<Task> getHistoryTasks();
+    List<Task> getSortedHistoryTask();
+    List<Integer> getHistoryId();
+
+
 
 
 }

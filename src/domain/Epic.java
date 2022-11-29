@@ -1,5 +1,7 @@
 package domain;
 
+import managers.TaskType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +13,10 @@ public class Epic extends Task {
     public Epic(String title, String description) {
         super(title, description);
 
+    }
+
+    public Epic(int id, TaskType type, String title, Status status, String description) {
+        super(id, type, title, status, description);
     }
 
     public List<Integer> getSubtaskId() {

@@ -20,24 +20,27 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void add(Task taskIn) {
-        taskIn.setId(id++);
-        tasks.put(taskIn.getId(), taskIn);
+    public void add(Task task) {
+        task.setId(id++);
+        task.setType(TaskType.TASK);
+        tasks.put(task.getId(), task);
 
     }
 
     @Override
-    public void add(Epic taskIn) {
-        taskIn.setId(id++);
-        epics.put(taskIn.getId(), taskIn);
-        taskIn.setStatus(Status.NEW);
+    public void add(Epic task) {
+        task.setId(id++);
+        task.setType(TaskType.EPIC);
+        epics.put(task.getId(), task);
+        task.setStatus(Status.NEW);
     }
 
     @Override
-    public void add(Subtask taskIn, int epicId) {
-        taskIn.setId(id++);
-        subtasks.put(taskIn.getId(), taskIn);
-        epics.get(epicId).getSubtaskId().add(taskIn.getId());
+    public void add(Subtask task, int epicId) {
+        task.setId(id++);
+        task.setType(TaskType.SUBTASK);
+        subtasks.put(task.getId(), task);
+        epics.get(epicId).getSubtaskId().add(task.getId());
         updateEpicStatus(epicId);
     }
 
@@ -128,7 +131,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     public Task getEpicById(int needId) {
         history.addHistoryTasks(epics.get(needId));
-
         return epics.get(needId);
     }
 

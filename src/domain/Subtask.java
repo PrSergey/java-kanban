@@ -1,14 +1,10 @@
 package domain;
 
+import managers.TaskType;
+
 public class Subtask extends Task {
 
-    public int getEpicId() {
-        return epicId;
-    }
 
-    public void setEpicId(int epicId) {
-        this.epicId = epicId;
-    }
 
     protected int epicId;
 
@@ -17,6 +13,17 @@ public class Subtask extends Task {
         super(title, description);
         this.epicId = epicId;
         this.status = status;
+    }
+    public Subtask(int id, TaskType type, String title, Status status, String description, int epicId) {
+        super(id, type, title, status, description);
+        this.epicId = epicId;
+    }
+    public int getEpicId() {
+        return epicId;
+    }
+
+    public void setEpicId(int epicId) {
+        this.epicId = epicId;
     }
 
     @Override
