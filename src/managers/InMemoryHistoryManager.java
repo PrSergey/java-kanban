@@ -43,13 +43,17 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public List<Task> getHistoryTasks() {
         sortedHistoryTask.clear();
-        Node next = firstTask.next;
-        sortedHistoryTask.add(firstTask.data);
-        Node nextTask = firstTask.next;
-        while (next != null) {
-            sortedHistoryTask.add(nextTask.data);
-            next = nextTask.next;
-            nextTask = nextTask.next;
+        try {
+            Node next = firstTask.next;
+            sortedHistoryTask.add(firstTask.data);
+            Node nextTask = firstTask.next;
+            while (next != null) {
+                sortedHistoryTask.add(nextTask.data);
+                next = nextTask.next;
+                nextTask = nextTask.next;
+            }
+        }catch (NullPointerException e){
+            System.out.println("Нет задач");
         }
         return sortedHistoryTask;
     }

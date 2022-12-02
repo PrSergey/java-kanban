@@ -9,6 +9,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
@@ -55,20 +56,23 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
 
     public static String historyToString(HistoryManager manager){
-        String tasksHistoryToString="";
+        StringBuilder tasksHistoryToString=new StringBuilder();
         List<Integer> historyId=manager.getHistoryId();
         for (Integer taskInHistory: historyId){
-            String taskIdInHistory=Integer.toString(taskInHistory);
-            tasksHistoryToString+=taskIdInHistory+",";
+            StringBuilder taskIdInHistory= new StringBuilder();
+            taskIdInHistory.append(Integer.toString(taskInHistory));
+
+            tasksHistoryToString.append(taskIdInHistory+",");
         }
-        return tasksHistoryToString;
+            String resultHistory=tasksHistoryToString.toString();
+        return resultHistory;
     }
 
 
     public void loadFromFile (File file){
         String path=file.getPath();
         String text=readFileContentsOrNull(path);
-        if (text.isEmpty()){
+        if (text == null || text.isEmpty()){
             System.out.println("Файл с задачами пустой");
             return;
         }
@@ -76,8 +80,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         String[] lines = text.split("\r?\n");
         for (int i = 1; i < (lines.length-1); i++) {
             if(!lines[i].isEmpty()) {
-                addTaskFromString(lines[i]);
-                if (taskId<addTaskFromString(lines[i])){
+                int newTaskId=addTaskFromString(lines[i]);
+                if (taskId<newTaskId){
                     taskId=addTaskFromString(lines[i]);
                 }
             }
@@ -129,18 +133,26 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         int idTask = Integer.parseInt(taskAllInformation[0]);
         task.setId(idTask);
 
-        if (taskAllInformation[1].equals("TASK")) {
-            Task newTask=createTask(taskAllInformation, idTask);
-            addTask(newTask);
-        } else if (taskAllInformation[1].equals("EPIC")) {
-            Epic newTask=createEpic(taskAllInformation, idTask);
-            addTask(newTask);
-        } else if (taskAllInformation[1].equals("SUBTASK"))  {
-            Subtask newTask=createSubtask(taskAllInformation, idTask);
-            addTask(newTask);
-        }else {
-            System.out.println("Некорректные данные в файле в типе задачи");
+        switch (taskAllInformation[1]) {
+            case "TASK": {
+                Task newTask = createTask(taskAllInformation, idTask);
+                addTask(newTask);
+                break;
+            }
+            case "EPIC": {
+                Epic newTask = createEpic(taskAllInformation, idTask);
+                addTask(newTask);
+                break;
+            }
+            case "SUBTASK": {
+                Subtask newTask = createSubtask(taskAllInformation, idTask);
+                addTask(newTask);
+                break;
+            }
+            default:
+                System.out.println("Некорректные данные в файле в типе задачи");
 
+                break;
         }
         return idTask;
     }
@@ -148,32 +160,32 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
 
     public Status definitionTaskStatus(String taskStatus){
-        if (taskStatus.equals("NEW")) {
-            return Status.NEW;
-        } else if (taskStatus.equals("DONE")) {
-            return Status.DONE;
-        } else {
-            return Status.IN_PROGRESS;
+        switch (taskStatus) {
+            case "NEW":
+                return Status.NEW;
+            case "DONE":
+                return Status.DONE;
+            case "IN_PROGRESS":
+                return Status.IN_PROGRESS;
+            default:
+                return null;
         }
     }
 
     public Task createTask (String[] taskInString, int id){
         Status statusEpic=definitionTaskStatus(taskInString[3]);
-        Task task=new Task(id, TaskType.TASK, taskInString[2], statusEpic, taskInString[4]);
-        return task;
+        return new Task(id, TaskType.TASK, taskInString[2], statusEpic, taskInString[4]);
     }
 
     public Epic createEpic (String[] taskInString, int id){
         Status statusEpic=definitionTaskStatus(taskInString[3]);
-        Epic epic=new Epic(id, TaskType.EPIC, taskInString[2], statusEpic, taskInString[4]);
-        return epic;
+        return new Epic(id, TaskType.EPIC, taskInString[2], statusEpic, taskInString[4]);
     }
 
     public Subtask createSubtask (String[] taskInString, int id){
         Status statusEpic=definitionTaskStatus(taskInString[3]);
         int subtaskForEpic=Integer.parseInt(taskInString[5]);
-        Subtask subtask=new Subtask(id, TaskType.SUBTASK, taskInString[2], statusEpic, taskInString[4], subtaskForEpic);
-        return subtask;
+        return new Subtask(id, TaskType.SUBTASK, taskInString[2], statusEpic, taskInString[4], subtaskForEpic);
     }
 
 
@@ -293,6 +305,37 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     @Override
     public void updateSubtask(Subtask task) {
         super.updateSubtask(task);
+    }
+
+    @Override
+    public List<Task> getTasks() {
+        List<Task> tasksList = new ArrayList<>();
+        for (int id : tasks.keySet()) {
+            tasksList.add(tasks.get(id));
+            history.addHistoryTasks(tasks.get(id));
+        }
+        save();
+        return tasksList;
+    }
+
+    public List<Task> getEpics() {
+        List<Task> epicsList = new ArrayList<>();
+        for (int id : epics.keySet()) {
+            epicsList.add(epics.get(id));
+            history.addHistoryTasks(epics.get(id));
+        }
+        save();
+        return epicsList;
+    }
+
+    public List<Task> getSubtasks() {
+        List<Task> subtasksList = new ArrayList<>();
+        for (int id : subtasks.keySet()) {
+            subtasksList.add(subtasks.get(id));
+            history.addHistoryTasks(subtasks.get(id));
+        }
+        save();
+        return subtasksList;
     }
 
 

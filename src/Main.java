@@ -1,6 +1,8 @@
 import domain.Epic;
 import domain.Status;
 import domain.Subtask;
+import domain.Task;
+import managers.FileBackedTasksManager;
 import managers.Managers;
 import managers.TaskManager;
 
@@ -12,6 +14,19 @@ public class Main {
         File file=new File("task.csv");
 
         TaskManager manager = Managers.getDefaultFile(file);
+
+//        manager.add(new Task("задача1", "описание"));
+//        System.out.println(manager.getTasks());
+//        System.out.println(manager.getEpics());
+//        System.out.println(manager.getSubtasks());
+//        System.out.println(manager.getHistory().getHistoryTasks());
+//        FileBackedTasksManager taskManager2 = (FileBackedTasksManager) Managers.getDefaultFile(file);
+//        taskManager2.loadFromFile(file);
+//        System.out.println(taskManager2.getTasks());
+//        System.out.println(taskManager2.getEpics());
+//        System.out.println(taskManager2.getSubtasks());
+//        System.out.println(taskManager2.getHistory().getHistoryTasks());
+
 
 
         Epic epic1 = new Epic("пробная", "эпик номер 1");
@@ -29,12 +44,12 @@ public class Main {
         manager.updateEpicStatus(epic2.getId());
         Epic epic3 = new Epic("пробная", "эпик номер 3");
         manager.add(epic3);
-        System.out.println(epic1.toString());
-        System.out.println(epic2.toString());
-        System.out.println(epic3.toString());
-        System.out.println(subtask2.toString());
-        System.out.println(subtask3.toString());
-        System.out.println(subtask5.toString());
+        System.out.println(epic1);
+        System.out.println(epic2);
+        System.out.println(epic3);
+        System.out.println(subtask2);
+        System.out.println(subtask3);
+        System.out.println(subtask5);
 
         System.out.println("Все эпики " + manager.getEpics() + "\n" + "Все подзадачи " + manager.getSubtasks());
         System.out.println(manager.subtaskByEpic(1));
@@ -42,18 +57,9 @@ public class Main {
         subtask2.setStatus(Status.DONE);
         manager.updateEpic(epic1);
         System.out.println("\n" + "Изменение статуса подзадачи и следовательно эпика" + "\n" + epic1.toString());
-        System.out.println(subtask2.toString());
+        System.out.println(subtask2);
 
-       /* manager.removeEpicById(1);
-        manager.removeSubtaskById(3);
-        System.out.println("\n"+"Удаление эпика №1 и подзадачи №3" + "\n" + manager.getEpics() + "\n" +
-                manager.getSubtasks());
-        manager.removeEpics();
-        manager.removeTasks();
-        manager.removeSubtasks();
-        System.out.println("\n"+"Удаление всех эпиков, подзадач и задач" + "\n" +"Все эпики "+ manager.getEpics() + "\n" +
-                "Все подзадачи "+manager.getSubtasks()+ "\n" + "Все задачи "+manager.getTasks());
-        */
+
 
 
 
@@ -72,7 +78,7 @@ public class Main {
         manager.getSubtaskById(subtask3.getId());
         manager.getEpicById(epic2.getId());
 
-        System.out.println(manager.getHistory().getSortedHistoryTask());
+        System.out.println(manager.getHistory().getHistoryTasks());
 
 
     }

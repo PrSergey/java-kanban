@@ -23,6 +23,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void add(Task task) {
         task.setId(id++);
         task.setType(TaskType.TASK);
+        task.setStatus(Status.NEW);
         tasks.put(task.getId(), task);
 
     }
@@ -74,6 +75,7 @@ public class InMemoryTaskManager implements TaskManager {
         List<Task> tasksList = new ArrayList<>();
         for (int id : tasks.keySet()) {
             tasksList.add(tasks.get(id));
+            history.addHistoryTasks(tasks.get(id));
         }
         return tasksList;
     }
@@ -82,6 +84,7 @@ public class InMemoryTaskManager implements TaskManager {
         List<Task> epicsList = new ArrayList<>();
         for (int id : epics.keySet()) {
             epicsList.add(epics.get(id));
+            history.addHistoryTasks(epics.get(id));
         }
         return epicsList;
     }
@@ -90,7 +93,7 @@ public class InMemoryTaskManager implements TaskManager {
         List<Task> subtasksList = new ArrayList<>();
         for (int id : subtasks.keySet()) {
             subtasksList.add(subtasks.get(id));
-
+            history.addHistoryTasks(subtasks.get(id));
         }
         return subtasksList;
     }
