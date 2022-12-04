@@ -38,12 +38,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
             fileTask.write("\n");
 
-//            for (int i = 0; i < history.getSortedHistoryTask().size(); i++) {
-//                Task task = history.getSortedHistoryTask().get(i);
-//                int idTask = task.getId();
-//                String id = Integer.toString(idTask);
-//                fileTask.write(id + ",");
-//            }
             fileTask.write(historyToString(history));
 
         } catch (IOException e) {
@@ -59,13 +53,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         StringBuilder tasksHistoryToString=new StringBuilder();
         List<Integer> historyId=manager.getHistoryId();
         for (Integer taskInHistory: historyId){
-            StringBuilder taskIdInHistory= new StringBuilder();
-            taskIdInHistory.append(Integer.toString(taskInHistory));
-
-            tasksHistoryToString.append(taskIdInHistory+",");
+            tasksHistoryToString.append(taskInHistory).append(",");
         }
-            String resultHistory=tasksHistoryToString.toString();
-        return resultHistory;
+        return tasksHistoryToString.toString();
     }
 
 
@@ -82,29 +72,34 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             if(!lines[i].isEmpty()) {
                 int newTaskId=addTaskFromString(lines[i]);
                 if (taskId<newTaskId){
-                    taskId=addTaskFromString(lines[i]);
+                    taskId=newTaskId;
                 }
             }
         }
-        addTaskInHistoryFromString(lines[lines.length-1]);
+            addTaskInHistoryFromString(lines[lines.length - 1]);
+
         id=++taskId;
     }
 
     public void addTaskInHistoryFromString(String line) {
+        try {
+            String[] tasksHistory = line.split(",");
 
-        String[] tasksHistory=line.split(",");
 
-        for (String elTasksHistory: tasksHistory){
-            int taskId=Integer.parseInt(elTasksHistory);
-            if (tasks.containsKey(taskId)){
-                history.addHistoryTasks(tasks.get(taskId));
-            }else if(epics.containsKey(taskId)){
-                history.addHistoryTasks(epics.get(taskId));
-            } else if (subtasks.containsKey(taskId)) {
-                history.addHistoryTasks(subtasks.get(taskId));
-            }else{
-                System.out.println("Задачи не найдено");
+            for (String elTasksHistory : tasksHistory) {
+                int taskId = Integer.parseInt(elTasksHistory);
+                if (tasks.containsKey(taskId)) {
+                    history.addHistoryTasks(tasks.get(taskId));
+                } else if (epics.containsKey(taskId)) {
+                    history.addHistoryTasks(epics.get(taskId));
+                } else if (subtasks.containsKey(taskId)) {
+                    history.addHistoryTasks(subtasks.get(taskId));
+                } else {
+                    System.out.println("Задачи не найдены");
+                }
             }
+        } catch (NumberFormatException e) {
+            System.out.println("История задач в файле пустая");
         }
 
     }
@@ -124,34 +119,31 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
 
-
     public int addTaskFromString(String value) {
         String[] taskAllInformation = value.split(",");
 
-        Task task = new Task(taskAllInformation[2], taskAllInformation[4]);
+        //Task task = new Task(taskAllInformation[2], taskAllInformation[4]);
 
         int idTask = Integer.parseInt(taskAllInformation[0]);
-        task.setId(idTask);
+        Status statusTask = definitionTaskStatus(taskAllInformation[3]);
+        //task.setId(idTask);
 
         switch (taskAllInformation[1]) {
             case "TASK": {
-                Task newTask = createTask(taskAllInformation, idTask);
-                addTask(newTask);
+                addTask(new Task(idTask, TaskType.TASK, taskAllInformation[2], statusTask, taskAllInformation[4]));
                 break;
             }
             case "EPIC": {
-                Epic newTask = createEpic(taskAllInformation, idTask);
-                addTask(newTask);
+                addTask(new Epic(idTask, TaskType.EPIC, taskAllInformation[2], statusTask, taskAllInformation[4]));
                 break;
             }
             case "SUBTASK": {
-                Subtask newTask = createSubtask(taskAllInformation, idTask);
-                addTask(newTask);
+                addTask(new Subtask(idTask, TaskType.SUBTASK, taskAllInformation[2], statusTask, taskAllInformation[4],
+                        Integer.parseInt(taskAllInformation[5])));
                 break;
             }
             default:
                 System.out.println("Некорректные данные в файле в типе задачи");
-
                 break;
         }
         return idTask;
@@ -170,22 +162,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             default:
                 return null;
         }
-    }
-
-    public Task createTask (String[] taskInString, int id){
-        Status statusEpic=definitionTaskStatus(taskInString[3]);
-        return new Task(id, TaskType.TASK, taskInString[2], statusEpic, taskInString[4]);
-    }
-
-    public Epic createEpic (String[] taskInString, int id){
-        Status statusEpic=definitionTaskStatus(taskInString[3]);
-        return new Epic(id, TaskType.EPIC, taskInString[2], statusEpic, taskInString[4]);
-    }
-
-    public Subtask createSubtask (String[] taskInString, int id){
-        Status statusEpic=definitionTaskStatus(taskInString[3]);
-        int subtaskForEpic=Integer.parseInt(taskInString[5]);
-        return new Subtask(id, TaskType.SUBTASK, taskInString[2], statusEpic, taskInString[4], subtaskForEpic);
     }
 
 

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+
+import java.util.function.Predicate;
 public class InMemoryTaskManager implements TaskManager {
 
     HashMap<Integer, Task> tasks = new HashMap<>();

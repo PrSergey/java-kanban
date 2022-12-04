@@ -29,6 +29,9 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     public List<Integer> sortedHistoryId() {
         historyId.clear();
+        if (firstTask==null){
+            return historyId;
+        }
         Node next = firstTask.next;
         historyId.add(firstTask.data.getId());
         Node nextTask = firstTask.next;
