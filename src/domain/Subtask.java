@@ -2,6 +2,8 @@ package domain;
 
 import managers.TaskType;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Subtask extends Task {
@@ -10,16 +12,21 @@ public class Subtask extends Task {
 
     protected int epicId;
 
-
-    public Subtask(String title, String description, int epicId, Status status) {
-        super(title, description);
+    public Subtask(String title, String description, Status status, LocalDateTime startTime, Duration duration, int epicId) {
+        super(title, description, status, startTime, duration);
         this.epicId = epicId;
-        this.status = status;
     }
+
     public Subtask(int id, TaskType type, String title, Status status, String description, int epicId) {
         super(id, type, title, status, description);
+        this.epicId=epicId;
+    }
+
+    public Subtask(int id, TaskType type, String title, Status status, String description, LocalDateTime startTime, Duration duration, int epicId) {
+        super(id, type, title, status, description, startTime, duration);
         this.epicId = epicId;
     }
+
     public int getEpicId() {
         return epicId;
     }
@@ -44,12 +51,15 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return "domain.Subtask{" +
+        return "Subtask{" +
                 "epicId=" + epicId +
+                ", id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", id=" + id +
-                ", status='" + status + '\'' +
+                ", status=" + status +
+                ", type=" + type +
+                ", startTime=" + startTime +
+                ", duration=" + duration +
                 '}';
     }
 }

@@ -3,10 +3,10 @@ package managers;
 import domain.Epic;
 import domain.Subtask;
 import domain.Task;
-import managers.HistoryManager;
 
 
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
 
@@ -50,8 +50,12 @@ public interface TaskManager {
 
     void updateSubtask(Subtask task);
 
-    List<Integer> subtaskByEpic(int epicId);
+    List<Integer> getSubtaskByEpic(int epicId);
 
     HistoryManager getHistory();
+
+    Set<Task> getPrioritizedTasks();
+
+    boolean checkIntersectionByTime(Task task);
 }
 
