@@ -1,7 +1,5 @@
 package domain;
 
-import managers.TaskType;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;

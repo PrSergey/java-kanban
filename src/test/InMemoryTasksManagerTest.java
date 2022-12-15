@@ -1,6 +1,7 @@
-package managers;
+package test;
 
 import domain.Status;
+import managers.InMemoryTaskManager;
 import org.junit.jupiter.api.Test;
 
 public class InMemoryTasksManagerTest extends TaskManagerTest<InMemoryTaskManager> {

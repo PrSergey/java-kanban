@@ -1,9 +1,6 @@
 package managers;
 
-import domain.Epic;
-import domain.Status;
-import domain.Subtask;
-import domain.Task;
+import domain.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
