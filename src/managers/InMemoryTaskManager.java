@@ -1,5 +1,7 @@
 package managers;
 
+import constant.Status;
+import constant.TaskType;
 import domain.*;
 import java.util.*;
 

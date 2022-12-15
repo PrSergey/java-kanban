@@ -1,5 +1,8 @@
 package domain;
 
+import constant.Status;
+import constant.TaskType;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -9,8 +12,6 @@ public class Task implements Comparable<Task> {
     protected int id;
     protected String title;
     protected String description;
-
-
     protected Status status;
     protected TaskType type;
     protected LocalDateTime startTime;

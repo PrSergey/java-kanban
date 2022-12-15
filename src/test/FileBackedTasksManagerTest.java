@@ -1,6 +1,6 @@
 package test;
 
-import domain.Status;
+import constant.Status;
 import managers.FileBackedTasksManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

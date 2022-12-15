@@ -1,6 +1,6 @@
 package test;
 
-import domain.Status;
+import constant.Status;
 import managers.InMemoryTaskManager;
 import org.junit.jupiter.api.Test;
 

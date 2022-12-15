@@ -1,5 +1,8 @@
 package domain;
 
+import constant.Status;
+import constant.TaskType;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
