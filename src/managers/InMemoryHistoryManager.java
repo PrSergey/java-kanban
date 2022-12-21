@@ -19,6 +19,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
 
     public List<Task> getSortedHistoryTask() {
+        getHistoryTasks();
         return sortedHistoryTask;
     }
 
@@ -45,7 +46,11 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public List<Task> getHistoryTasks() {
+
         sortedHistoryTask.clear();
+        if (historyTasks.isEmpty()){
+            return sortedHistoryTask;
+        }
         try {
             Node next = firstTask.next;
             sortedHistoryTask.add(firstTask.data);
@@ -81,10 +86,18 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
+
         Node removeTask = historyTasks.get(id);
         if (removeTask == null) {
             return;
         }
+        if (removeTask.equals(firstTask) && historyTasks.size() == 1) {
+            firstTask=null;
+            historyTasks.remove(id);
+            getHistoryTasks();
+            return;
+        }
+
         if (removeTask.equals(firstTask)) {
             firstTask = firstTask.next;
             firstTask.prev = null;
@@ -107,14 +120,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         lastTask = newNode;
 
     }
-//    @Override
-//    public String toString() {
-//       getHistoryTasks();
-//        final StringBuilder sb = new StringBuilder("managers.InMemoryHistoryManager{");
-//        sb.append("sortedTHistoryTask=").append(sortedHistoryTask);
-//        sb.append('}');
-//        return sb.toString();
-//    }
 
     @Override
     public String toString() {

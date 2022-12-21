@@ -36,29 +36,7 @@ public class InMemoryTasksManagerTest extends TaskManagerTest<InMemoryTaskManage
         super.shouldAddSubtaskInManager();
     }
 
-    @Override
-    @Test
-    public void shouldUpdateStatusEpicWhenAllSubTaskWithStatusNew() {
-        super.shouldUpdateStatusEpicWhenAllSubTaskWithStatusNew();
-    }
 
-    @Override
-    @Test
-    public void shouldUpdateStatusEpicWhenAllSubTaskWithStatusDone() {
-        super.shouldUpdateStatusEpicWhenAllSubTaskWithStatusDone();
-    }
-
-    @Override
-    @Test
-    public void shouldUpdateStatusEpicWhenAllSubTaskWithStatusDoneAndNew() {
-        super.shouldUpdateStatusEpicWhenAllSubTaskWithStatusDoneAndNew();
-    }
-
-    @Override
-    @Test
-    public void shouldUpdateStatusEpicWhenAllSubTaskWithStatusInProgress() {
-        super.shouldUpdateStatusEpicWhenAllSubTaskWithStatusInProgress();
-    }
 
     @Override
     @Test

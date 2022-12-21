@@ -2,6 +2,7 @@ package test;
 
 import constant.Status;
 import managers.FileBackedTasksManager;
+import managers.TaskManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -288,9 +289,8 @@ public class FileBackedTasksManagerTest extends TaskManagerTest <FileBackedTasks
     @Test
     public void shouldWriteTaskInFileAndLoadTaskInManager(){
         manager.add(epic1WithTime1);
-        manager.save();
-        manager.loadFromFile(fileWithTasks);
-        Assertions.assertEquals(manager.getEpicById(1), epic1WithTime1);
+        FileBackedTasksManager manager2=new FileBackedTasksManager(fileWithTasks);
+        Assertions.assertEquals(manager.getEpicById(1), manager2.getEpicById(1));
     }
 
 

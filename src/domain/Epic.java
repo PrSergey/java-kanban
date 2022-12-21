@@ -59,13 +59,15 @@ public class Epic extends Task {
 
     @Override
     public Duration getDuration (){
-        return duration=Duration.between(startTime, endTimeEpic);
+            return duration;
+
     }
 
     public LocalDateTime setEndTime(LocalDateTime endTimeSubtask){
         if (endTimeEpic==null || endTimeSubtask.isAfter(endTimeEpic)){
             endTimeEpic=endTimeSubtask;
         }
+        duration=Duration.between(startTime, endTimeEpic);
         return endTimeEpic;
 
     }
@@ -85,17 +87,18 @@ public class Epic extends Task {
                 '}';
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Epic epic = (Epic) o;
-        return subtaskId.equals(epic.subtaskId);
+        return Objects.equals(subtaskId, epic.subtaskId) && Objects.equals(endTimeEpic, epic.endTimeEpic);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), subtaskId);
+        return Objects.hash(super.hashCode(), subtaskId, endTimeEpic);
     }
 }

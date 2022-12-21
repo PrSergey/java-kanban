@@ -12,7 +12,9 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
@@ -28,23 +30,25 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public void save() {
         try (BufferedWriter fileTask = new BufferedWriter(new FileWriter(fileWithTasks, StandardCharsets.UTF_8))) {
             fileTask.write("id,type,name,status,description,startTime,duration" + "\n");
-            for (Integer taskId : tasks.keySet())
-                fileTask.write(toString(tasks.get(taskId)));
-
-            for (Integer taskId : epics.keySet())
-                fileTask.write(toString(epics.get(taskId)));
-
-            for (Integer taskId : subtasks.keySet())
-                fileTask.write(toString(subtasks.get(taskId)));
-
+            if (!tasks.isEmpty()) {
+                for (Integer taskId : tasks.keySet())
+                    fileTask.write(toString(tasks.get(taskId)));
+            }
+            if (!epics.isEmpty()) {
+                for (Integer taskId : epics.keySet()) {
+                    fileTask.write(toString(epics.get(taskId)));
+                }
+            }
+            if (!subtasks.isEmpty()) {
+                for (Integer taskId : subtasks.keySet())
+                    fileTask.write(toString(subtasks.get(taskId)));
+            }
             fileTask.write("\n");
 
             fileTask.write(historyToString(history));
 
         } catch (IOException e) {
             System.out.println("Ошибка записи");
-        } catch (NullPointerException e) {
-            System.out.println("Нет задач");
         }
 
     }
@@ -71,7 +75,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         int taskId = 0;
         String[] lines = text.split("\r?\n");
-        for (int i = 1; i < (lines.length - 1); i++) {
+        for (int i = 1; i < (lines.length); i++) {
             if (!lines[i].isEmpty()) {
                 int newTaskId = addTaskFromString(lines[i]);
                 if (taskId < newTaskId) {
@@ -79,15 +83,21 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 }
             }
         }
-        addTaskInHistoryFromString(lines[lines.length - 1]);
 
+        if(!lines[lines.length - 1].isEmpty() && lines.length!=1){
+            addTaskInHistoryFromString(lines[lines.length - 1]);
+        }
         id = ++taskId;
+
+
+
+
     }
 
     public void addTaskInHistoryFromString(String line) {
+
         try {
             String[] tasksHistory = line.split(",");
-
 
             for (String elTasksHistory : tasksHistory) {
                 int taskId = Integer.parseInt(elTasksHistory);
@@ -141,12 +151,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 break;
             }
             case "EPIC": {
-                addTask(new Epic(idTask, TaskType.TASK, taskAllInformation[2], statusTask, taskAllInformation[4],
+                addTask(new Epic(idTask, TaskType.EPIC, taskAllInformation[2], statusTask, taskAllInformation[4],
                         startTime, Duration.ofMinutes(minutesDuration)));
                 break;
             }
             case "SUBTASK": {
-                addTask(new Subtask(idTask, TaskType.TASK, taskAllInformation[2], statusTask, taskAllInformation[4],
+                addTask(new Subtask(idTask, TaskType.SUBTASK, taskAllInformation[2], statusTask, taskAllInformation[4],
                         startTime, Duration.ofMinutes(minutesDuration),
                         Integer.parseInt(taskAllInformation[7])));
                 break;
@@ -160,8 +170,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private LocalDateTime transformationToLocalDateTime(String startTimeString) {
         DateTimeFormatter startTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-        LocalDateTime startTime = LocalDateTime.parse(startTimeString, startTimeFormatter);
-        return startTime;
+        return LocalDateTime.parse(startTimeString, startTimeFormatter);
     }
 
 
@@ -196,9 +205,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 "," + task.getType() +
                 "," + task.getTitle() +
                 "," + task.getStatus() +
-                "," + task.getDescription() +
-                "," + task.getStartTime() +
-                "," + task.getDuration().toMinutes() +
+                "," + task.getDescription()+
+                "," + task.getStartTime()+
+                "," + task.getDuration().toMinutes()+
                 "\n";
     }
 
@@ -311,35 +320,40 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     @Override
     public List<Task> getTasks() {
+        return creatureListWithTask(TaskType.TASK);
+    }
+
+    public List<Task> getEpics() {
+        return creatureListWithTask(TaskType.EPIC);
+    }
+
+    public List<Task> getSubtasks() {
+        return creatureListWithTask(TaskType.SUBTASK);
+    }
+
+    public List<Task> creatureListWithTask (TaskType taskType){
         List<Task> tasksList = new ArrayList<>();
-        for (int id : tasks.keySet()) {
-            tasksList.add(tasks.get(id));
-            history.addHistoryTasks(tasks.get(id));
+        if (taskType.equals(TaskType.TASK)){
+            for (int id : tasks.keySet()) {
+                tasksList.add(tasks.get(id));
+                history.addHistoryTasks(tasks.get(id));
+            }
+        }
+        if (taskType.equals(TaskType.EPIC)){
+            for (int id : epics.keySet()) {
+                tasksList.add(epics.get(id));
+                history.addHistoryTasks(epics.get(id));
+            }
+        }
+        if (taskType.equals(TaskType.SUBTASK)){
+            for (int id : subtasks.keySet()) {
+                tasksList.add(subtasks.get(id));
+                history.addHistoryTasks(subtasks.get(id));
+            }
         }
         save();
         return tasksList;
     }
-
-    public List<Task> getEpics() {
-        List<Task> epicsList = new ArrayList<>();
-        for (int id : epics.keySet()) {
-            epicsList.add(epics.get(id));
-            history.addHistoryTasks(epics.get(id));
-        }
-        save();
-        return epicsList;
-    }
-
-    public List<Task> getSubtasks() {
-        List<Task> subtasksList = new ArrayList<>();
-        for (int id : subtasks.keySet()) {
-            subtasksList.add(subtasks.get(id));
-            history.addHistoryTasks(subtasks.get(id));
-        }
-        save();
-        return subtasksList;
-    }
-
 
     private String readFileContentsOrNull(String path) {
         try {
