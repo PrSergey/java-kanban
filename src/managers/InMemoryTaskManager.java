@@ -48,10 +48,10 @@ public class InMemoryTaskManager implements TaskManager {
 
 
     @Override
-    public void add(Subtask task, int epicId) {
+    public void add(Subtask task) {
         if (!checkIntersectionByTime(task))
             return;
-
+        int epicId=task.getEpicId();
         task.setId(id++);
         task.setType(TaskType.SUBTASK);
         if (epics.get(epicId) == null) {
@@ -87,9 +87,19 @@ public class InMemoryTaskManager implements TaskManager {
 
         }
     }
-
     @Override
     public List<Task> getTasks() {
+        return creatureListWithTask(TaskType.TASK, tasks);
+    }
+    @Override
+    public List<Task> getEpics() {
+        return creatureListWithTask(TaskType.EPIC, epics);
+    }
+    @Override
+    public List<Task> getSubtasks() {
+        return creatureListWithTask(TaskType.SUBTASK, subtasks);
+    }
+    public List<Task> creatureListWithTask(TaskType taskType, HashMap<Integer, ? extends Task> tasks) {
         List<Task> tasksList = new ArrayList<>();
         for (int id : tasks.keySet()) {
             tasksList.add(tasks.get(id));
@@ -98,22 +108,22 @@ public class InMemoryTaskManager implements TaskManager {
         return tasksList;
     }
 
-    public List<Task> getEpics() {
-        List<Task> epicsList = new ArrayList<>();
+    @Override
+    public List<Task> getAllTasks() {
+        List<Task> tasksList = new ArrayList<>();
+        for (int id : tasks.keySet()) {
+            tasksList.add(tasks.get(id));
+            history.addHistoryTasks(tasks.get(id));
+        }
         for (int id : epics.keySet()) {
-            epicsList.add(epics.get(id));
+            tasksList.add(epics.get(id));
             history.addHistoryTasks(epics.get(id));
         }
-        return epicsList;
-    }
-
-    public List<Task> getSubtasks() {
-        List<Task> subtasksList = new ArrayList<>();
         for (int id : subtasks.keySet()) {
-            subtasksList.add(subtasks.get(id));
+            tasksList.add(subtasks.get(id));
             history.addHistoryTasks(subtasks.get(id));
         }
-        return subtasksList;
+        return tasksList;
     }
 
     public void removeTasks() {
@@ -137,6 +147,18 @@ public class InMemoryTaskManager implements TaskManager {
         }
         subtasks.clear();
 
+    }
+
+    public void removeAllTasks() {
+        if (!tasks.isEmpty()){
+            removeTasks();
+        }
+        if (!epics.isEmpty()){
+            removeEpics();
+        }
+        if (!subtasks.isEmpty()){
+            removeSubtasks();
+        }
     }
 
     public Task getTaskById(int needId) {

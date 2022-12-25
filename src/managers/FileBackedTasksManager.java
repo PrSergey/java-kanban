@@ -20,6 +20,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     File fileWithTasks;
 
+    public FileBackedTasksManager(String pathFile) {
+    }
 
     public FileBackedTasksManager(File fileWithTasks) {
         this.fileWithTasks = fileWithTasks;
@@ -75,7 +77,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         int taskId = 0;
         String[] lines = text.split("\r?\n");
-        for (int i = 1; i < (lines.length); i++) {
+        for (int i = 1; i < (lines.length-1); i++) {
             if (!lines[i].isEmpty()) {
                 int newTaskId = addTaskFromString(lines[i]);
                 if (taskId < newTaskId) {
@@ -119,10 +121,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public void addTask(Task task) {
         tasks.put(task.getId(), task);
+        prioritizedTasks.add(task);
     }
 
     public void addTask(Epic task) {
         epics.put(task.getId(), task);
+        prioritizedTasks.add(task);
     }
 
     public void addTask(Subtask task) {
@@ -132,7 +136,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         Epic epicOfSubtask = epics.get(epicId);
         epicOfSubtask.setStartTime(task.getStartTime());
         epicOfSubtask.setEndTime(task.getEndTime());
-
+        prioritizedTasks.add(task);
     }
 
 
@@ -238,8 +242,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void add(Subtask task, int epicId) {
-        super.add(task, epicId);
+    public void add(Subtask task) {
+        super.add(task);
         save();
     }
 
@@ -268,6 +272,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
+    public void removeAllTasks() {
+        super.removeAllTasks();
+        save();
+    }
+
+    @Override
     public Task getTaskById(int needId) {
         history.addHistoryTasks(tasks.get(needId));
         save();
@@ -287,6 +297,25 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         history.addHistoryTasks(epics.get(needId));
         save();
         return epics.get(needId);
+    }
+
+    @Override
+    public List<Task> getAllTasks() {
+        List<Task> tasksList = new ArrayList<>();
+        for (int id : tasks.keySet()) {
+            tasksList.add(tasks.get(id));
+            history.addHistoryTasks(tasks.get(id));
+        }
+        for (int id : epics.keySet()) {
+            tasksList.add(epics.get(id));
+            history.addHistoryTasks(epics.get(id));
+        }
+        for (int id : subtasks.keySet()) {
+            tasksList.add(subtasks.get(id));
+            history.addHistoryTasks(subtasks.get(id));
+        }
+        save();
+        return tasksList;
     }
 
     @Override
@@ -318,38 +347,22 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         super.updateSubtask(task);
     }
 
-    @Override
     public List<Task> getTasks() {
-        return creatureListWithTask(TaskType.TASK);
+        return creatureListWithTask(TaskType.TASK, tasks);
     }
-
+    @Override
     public List<Task> getEpics() {
-        return creatureListWithTask(TaskType.EPIC);
+        return creatureListWithTask(TaskType.EPIC, epics);
     }
-
+    @Override
     public List<Task> getSubtasks() {
-        return creatureListWithTask(TaskType.SUBTASK);
+        return creatureListWithTask(TaskType.SUBTASK, subtasks);
     }
-
-    public List<Task> creatureListWithTask (TaskType taskType){
+    public List<Task> creatureListWithTask(TaskType taskType, HashMap<Integer, ? extends Task> tasks) {
         List<Task> tasksList = new ArrayList<>();
-        if (taskType.equals(TaskType.TASK)){
-            for (int id : tasks.keySet()) {
-                tasksList.add(tasks.get(id));
-                history.addHistoryTasks(tasks.get(id));
-            }
-        }
-        if (taskType.equals(TaskType.EPIC)){
-            for (int id : epics.keySet()) {
-                tasksList.add(epics.get(id));
-                history.addHistoryTasks(epics.get(id));
-            }
-        }
-        if (taskType.equals(TaskType.SUBTASK)){
-            for (int id : subtasks.keySet()) {
-                tasksList.add(subtasks.get(id));
-                history.addHistoryTasks(subtasks.get(id));
-            }
+        for (int id : tasks.keySet()) {
+            tasksList.add(tasks.get(id));
+            history.addHistoryTasks(tasks.get(id));
         }
         save();
         return tasksList;

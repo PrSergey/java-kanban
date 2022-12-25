@@ -34,10 +34,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     public void addSubtaskWithDifferentStatus(Status StatusSubtask1, Status StatusSubtask2) {
         Subtask subtask1WithTime1 = new Subtask("пробная подзадача 1", "подзадача для эпик 1",
                 StatusSubtask1, timeTask2, Duration.ofMinutes(50), epic1WithTime1.getId());
-        manager.add(subtask1WithTime1, epic1WithTime1.getId());
+        manager.add(subtask1WithTime1);
         Subtask subtask2WithTime1 = new Subtask("пробная подзадача 1", "подзадача для эпик 1",
                 StatusSubtask2, timeTask3, Duration.ofMinutes(50), epic1WithTime1.getId());
-        manager.add(subtask2WithTime1, epic1WithTime1.getId());
+        manager.add(subtask2WithTime1);
     }
 
 
@@ -57,7 +57,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         manager.add(epic1WithTime1);
         Subtask subtask2WithTime1 = new Subtask("пробная подзадача 1", "подзадача для эпик 1", Status.NEW,
                 timeTask2, Duration.ofMinutes(50), 1);
-        manager.add(subtask2WithTime1, 1);
+        manager.add(subtask2WithTime1);
         Assertions.assertEquals(subtask2WithTime1, manager.getSubtasks().get(0));
     }
 
@@ -199,7 +199,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         manager.add(epic1WithTime1);
         Subtask subtaskWithTime1 = new Subtask("пробная подзадача 1", "подзадача для эпик 1", Status.NEW,
                 timeTask2, Duration.ofMinutes(50), 1);
-        manager.add(subtaskWithTime1, 1);
+        manager.add(subtaskWithTime1);
         Assertions.assertEquals(manager.getSubtaskById(2), subtaskWithTime1);
     }
 
