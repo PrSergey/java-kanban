@@ -27,20 +27,22 @@ public class HttpTaskServer {
 
     private final int PORT = 8080;
     private final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    private  Gson gson;
+    private Gson gson;
     private TaskManager manager;
     private HttpServer server;
 
 
     public HttpTaskServer() throws IOException, InterruptedException {
-        this.manager=Managers.getDefaultFile("http://localhost:8080");
-        gson=Managers.getGson();
-        server=HttpServer.create(new InetSocketAddress("localhost", PORT), 0);
+        this.manager = Managers.getDefaultFile("http://localhost:8078");
+        gson = Managers.getGson();
+        server = HttpServer.create(new InetSocketAddress("localhost", PORT), 0);
         server.createContext("/tasks", this::handleTask);
     }
 
 
-
+    public TaskManager getManager() {
+        return manager;
+    }
 
     public void handleTask(HttpExchange exchange) throws IOException {
 
@@ -53,9 +55,13 @@ public class HttpTaskServer {
         try {
             switch (requestMethod) {
                 case ("GET"): {
+
                     if (elementPath.length == 2) {
-                        String allTasks=gson.toJson(manager.getAllTasks());;
+                        String allTasks = gson.toJson(manager.getAllTasks());
                         sendText(exchange, allTasks);
+                    } else if (elementPath[2].equals("history")) {
+                        String history = gson.toJson(manager.getHistory().getSortedHistoryTask());
+                        sendText(exchange, history);
                     } else if (elementPath.length < 4) {
                         sendText(exchange, getTasks(elementPath));
                     } else if ((elementPath.length < 5)) {
@@ -70,13 +76,13 @@ public class HttpTaskServer {
                     break;
                 }
                 case ("POST"): {
-                    if (elementPath.length==3){
+                    if (elementPath.length == 3) {
                         addTask(elementPath, jsonTask);
                         exchange.sendResponseHeaders(200, 0);
-                    } else if (elementPath.length==4 && elementPath[3].equals("update")) {
+                    } else if (elementPath.length == 4 && elementPath[3].equals("update")) {
                         updateTask(elementPath, jsonTask);
                         exchange.sendResponseHeaders(200, 0);
-                    }else {
+                    } else {
                         exchange.sendResponseHeaders(405, 0);
                     }
                     break;
@@ -100,7 +106,6 @@ public class HttpTaskServer {
                     System.out.println("Переданный метод не найден");
                     exchange.sendResponseHeaders(405, 0);
                 }
-
             }
         } catch (Exception exception) {
             exception.getStackTrace();
@@ -110,131 +115,151 @@ public class HttpTaskServer {
     }
 
 
-    public void addTask(String[] path, String bodyTask){
-        String typeTask=path[2];
-        switch (typeTask){
+    public void addTask(String[] path, String bodyTask) {
+        String typeTask = path[2];
+        switch (typeTask) {
             case ("task"): {
                 Task task = gson.fromJson(bodyTask, Task.class);
                 manager.add(task);
                 break;
-            } case ("epic"): {
+            }
+            case ("epic"): {
+                System.out.println(bodyTask);
                 Epic task = gson.fromJson(bodyTask, Epic.class);
                 manager.add(task);
+                System.out.println("задача добавлена");
                 break;
-            } case ("subtask"): {
+            }
+            case ("subtask"): {
                 Subtask task = gson.fromJson(bodyTask, Subtask.class);
                 manager.add(task);
                 break;
-            } default: {
+            }
+            default: {
                 System.out.println("Задача не добавлена");
             }
         }
 
     }
 
-    public void updateTask(String[] path, String bodyTask){
-        String typeTask=path[2];
-        switch (typeTask){
+    public void updateTask(String[] path, String bodyTask) {
+        String typeTask = path[2];
+        switch (typeTask) {
             case ("task"): {
                 Task task = gson.fromJson(bodyTask, Task.class);
                 manager.updateTask(task);
                 break;
-            } case ("epic"): {
+            }
+            case ("epic"): {
                 Epic task = gson.fromJson(bodyTask, Epic.class);
                 manager.updateEpic(task);
                 break;
-            } case ("subtask"): {
+            }
+            case ("subtask"): {
                 Subtask task = gson.fromJson(bodyTask, Subtask.class);
                 manager.updateSubtask(task);
                 break;
-            } default: {
+            }
+            default: {
                 System.out.println("Задача не добавлена");
             }
         }
     }
 
-    public String getTasks(String[] path){
-        String tasks="";
-            switch (path[2]){
-                case ("task"): {
-                    tasks=gson.toJson(manager.getTasks());
-                    break;
-                } case ("epic"): {
-                    tasks=gson.toJson(manager.getEpics());
-                    break;
-                } case ("subtask"): {
-                    tasks=gson.toJson(manager.getSubtasks());
-                    break;
-                } default: {
-                    System.out.println("Передан неизветсный тип задачи");
-                }
+    public String getTasks(String[] path) {
+        String tasks = "";
+        switch (path[2]) {
+            case ("task"): {
+                tasks = gson.toJson(manager.getTasks());
+                break;
             }
+            case ("epic"): {
+                tasks = gson.toJson(manager.getEpics());
+                break;
+            }
+            case ("subtask"): {
+                tasks = gson.toJson(manager.getSubtasks());
+                break;
+            }
+            default: {
+                System.out.println("Передан неизветсный тип задачи");
+            }
+        }
         return tasks;
     }
 
-    public String getTaskById(String[] path){
-        String task="";
-        int taskId=parseTaskId(path[3]);
-            switch (path[2]){
-                case ("task"): {
-                    task=gson.toJson(manager.getTaskById(taskId));
-                    break;
-                } case ("epic"): {
-                    task=gson.toJson(manager.getEpicById(taskId));
-                    break;
-                } case ("subtask"): {
-                    task=gson.toJson(manager.getSubtaskById(taskId));
-                    break;
-                } default: {
-                    System.out.println("Передан неизветсный тип задачи");
-                }
+    public String getTaskById(String[] path) {
+        String task = "";
+        int taskId = parseTaskId(path[3]);
+        switch (path[2]) {
+            case ("task"): {
+                task = gson.toJson(manager.getTaskById(taskId));
+                break;
             }
+            case ("epic"): {
+                task = gson.toJson(manager.getEpicById(taskId));
+                break;
+            }
+            case ("subtask"): {
+                task = gson.toJson(manager.getSubtaskById(taskId));
+                break;
+            }
+            default: {
+                System.out.println("Передан неизветсный тип задачи");
+            }
+        }
         return task;
     }
 
 
-    public void deleteTasks(String[] path){
-        switch (path[2]){
+    public void deleteTasks(String[] path) {
+        switch (path[2]) {
             case ("task"): {
                 manager.removeTasks();
                 break;
-            } case ("epic"): {
+            }
+            case ("epic"): {
                 manager.removeEpics();
                 break;
-            } case ("subtask"): {
+            }
+            case ("subtask"): {
                 manager.removeSubtasks();
                 break;
-            } default: {
+            }
+            default: {
                 System.out.println("Передан неизветсный тип задачи");
             }
         }
     }
 
-    public void deleteTasksById(String[] path){
-        int taskId=parseTaskId(path[3]);
-        switch (path[2]){
+    public void deleteTasksById(String[] path) {
+        int taskId = parseTaskId(path[3]);
+        switch (path[2]) {
             case ("task"): {
                 manager.removeTaskById(taskId);
                 break;
-            } case ("epic"): {
+            }
+            case ("epic"): {
                 manager.removeEpicById(taskId);
                 break;
-            } case ("subtask"): {
+            }
+            case ("subtask"): {
                 manager.removeSubtaskById(taskId);
                 break;
-            } default: {
+            }
+            default: {
                 System.out.println("Передан неизветсный тип задачи");
             }
         }
     }
-    public int parseTaskId (String taskId){
-        try{
+
+    public int parseTaskId(String taskId) {
+        try {
             return Integer.parseInt(taskId);
-        }catch (NumberFormatException exception){
+        } catch (NumberFormatException exception) {
             return -1;
         }
     }
-
 
 
     public void start() {
@@ -243,7 +268,7 @@ public class HttpTaskServer {
         server.start();
     }
 
-    public void stop(){
+    public void stop() {
         server.stop(0);
     }
 
@@ -257,10 +282,4 @@ public class HttpTaskServer {
         h.sendResponseHeaders(200, resp.length);
         h.getResponseBody().write(resp);
     }
-
-
-
-
-
-
 }

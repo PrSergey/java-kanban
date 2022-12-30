@@ -14,7 +14,7 @@ import com.sun.net.httpserver.HttpServer;
  * Постман: https://www.getpostman.com/collections/a83b61d9e1c81c10575c
  */
 public class KVServer {
-    public static final int PORT = 8080;
+    public static final int PORT = 8078;
     private final String apiToken;
     private final HttpServer server;
     private final Map<String, String> data = new HashMap<>();
@@ -37,13 +37,18 @@ public class KVServer {
             }
             if ("GET".equals(h.getRequestMethod())) {
                 String key = h.getRequestURI().getPath().substring("/load/".length());
+                if (!data.containsKey(key)) {
+                    System.out.println(key + " - данный key отсутсвует");
+                    h.sendResponseHeaders(400, 0);
+                    return;
+                }
                 if (key.isEmpty()) {
                     System.out.println("Key для сохранения пустой. key указывается в пути: /load/{key}");
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
                 System.out.println("Значение для ключа " + key + " успешно обновлено!");
-                String tasks=data.get(key);
+                String tasks = data.get(key);
                 sendText(h, tasks);
                 h.sendResponseHeaders(200, 0);
             } else {
@@ -130,7 +135,8 @@ public class KVServer {
         h.sendResponseHeaders(200, resp.length);
         h.getResponseBody().write(resp);
     }
-    public void stop(){
+
+    public void stop() {
         server.stop(0);
     }
 }

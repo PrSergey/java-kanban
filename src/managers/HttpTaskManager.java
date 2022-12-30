@@ -1,10 +1,22 @@
 package managers;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
+import constant.Status;
+import constant.TaskType;
+import domain.Epic;
+import domain.Subtask;
+import domain.Task;
 import server.KVTaskClient;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class HttpTaskManager extends FileBackedTasksManager {
 
@@ -15,7 +27,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
     public HttpTaskManager(String pathFile) throws IOException, InterruptedException {
         super(pathFile);
         this.uri = URI.create(pathFile);
-        KVTaskClient kvTaskClient=new KVTaskClient(uri);
+        this.kvTaskClient=new KVTaskClient(uri);
         gson=Managers.getGson();
         loadFromFile();
     }
@@ -24,17 +36,18 @@ public class HttpTaskManager extends FileBackedTasksManager {
     public void save(){
         try {
 
-            if (!tasks.isEmpty()) {
-                String tasksText=gson.toJson(getTasks());
 
+            if (!tasks.isEmpty()) {
+                String tasksText=gson.toJson(tasks);
                 kvTaskClient.put("tasks", tasksText);
             }
             if (!epics.isEmpty()) {
-                String epicsText=gson.toJson(getEpics());
+                String epicsText=gson.toJson(epics);
                 kvTaskClient.put("epics", epicsText);
             }
             if (!subtasks.isEmpty()) {
-                String subtasksText=gson.toJson(getSubtasks());
+
+                String subtasksText=gson.toJson(subtasks);
                 kvTaskClient.put("subtasks", subtasksText);
 
             }
@@ -49,19 +62,162 @@ public class HttpTaskManager extends FileBackedTasksManager {
         }
     }
 
-
     public void loadFromFile(){
         try {
-            kvTaskClient.load("tasks");
-            kvTaskClient.load("epics");
-            kvTaskClient.load("subtasks");
+            Type type = new TypeToken<Map<Integer, ? extends Task>>(){}.getType();
+
+            String taskInString=kvTaskClient.load("tasks");
+            if (!taskInString.isBlank()) {
+                tasks = gson.fromJson(taskInString, type);
+            }
+            String epicInString=kvTaskClient.load("epics");
+            if(!epicInString.isBlank()) {
+                epics = gson.fromJson(epicInString, type);
+            }
+            String subtaskInString=kvTaskClient.load("subtasks");
+            if (!subtaskInString.isBlank()) {
+                subtasks = gson.fromJson(subtaskInString, type);
+            }
+            String historyInString=kvTaskClient.load("history");
+            if (!historyInString.isBlank()) {
+                history = gson.fromJson(historyInString, type);
+            }
+
 
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
-        } catch (NullPointerException ex){
-            System.out.println("Задачи в базе отсутсвуют");
         }
     }
+
+    @Override
+    public void addTask(Task task) {
+        super.addTask(task);
+    }
+
+    @Override
+    public void addTask(Epic task) {
+        super.addTask(task);
+    }
+
+    @Override
+    public void addTask(Subtask task) {
+        super.addTask(task);
+    }
+
+    @Override
+    public Status definitionTaskStatus(String taskStatus) {
+        return super.definitionTaskStatus(taskStatus);
+    }
+
+
+    @Override
+    public void add(Task task) {
+        super.add(task);
+    }
+
+    @Override
+    public void add(Epic task) {
+        super.add(task);
+    }
+
+    @Override
+    public void add(Subtask task) {
+        super.add(task);
+    }
+
+    @Override
+    public void updateEpicStatus(int epicId) {
+        super.updateEpicStatus(epicId);
+    }
+
+    @Override
+    public void removeTasks() {
+        super.removeTasks();
+    }
+
+    @Override
+    public void removeEpics() {
+        super.removeEpics();
+    }
+
+    @Override
+    public void removeSubtasks() {
+        super.removeSubtasks();
+    }
+
+    @Override
+    public void removeAllTasks() {
+        super.removeAllTasks();
+    }
+
+    @Override
+    public Task getTaskById(int needId) {
+        return super.getTaskById(needId);
+    }
+
+    @Override
+    public Task getSubtaskById(int needId) {
+        return super.getSubtaskById(needId);
+    }
+
+    @Override
+    public Task getEpicById(int needId) {
+        return super.getEpicById(needId);
+    }
+
+    @Override
+    public List<Task> getAllTasks() {
+        return super.getAllTasks();
+    }
+
+    @Override
+    public void removeTaskById(int needId) {
+        super.removeTaskById(needId);
+    }
+
+    @Override
+    public void removeEpicById(int needId) {
+        super.removeEpicById(needId);
+    }
+
+    @Override
+    public void removeSubtaskById(int needId) {
+        super.removeSubtaskById(needId);
+    }
+
+    @Override
+    public void updateEpic(Epic task) {
+        super.updateEpic(task);
+    }
+
+    @Override
+    public void updateSubtask(Subtask task) {
+        super.updateSubtask(task);
+    }
+
+    @Override
+    public List<Task> getTasks() {
+        return super.getTasks();
+    }
+
+    @Override
+    public List<Task> getEpics() {
+        return super.getEpics();
+    }
+
+    @Override
+    public List<Task> getSubtasks() {
+        return super.getSubtasks();
+    }
+
+    @Override
+    public List<Task> creatureListWithTask(TaskType taskType, HashMap<Integer, ? extends Task> tasks) {
+        return super.creatureListWithTask(taskType, tasks);
+    }
+
+
+
+
 
 
 
