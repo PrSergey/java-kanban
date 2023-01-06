@@ -1,12 +1,12 @@
 package test;
 
-import domain.Epic;
 import constant.Status;
+import constant.TaskType;
+import domain.Epic;
 import domain.Subtask;
 import domain.Task;
 import managers.HistoryManager;
 import managers.TaskManager;
-import constant.TaskType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 

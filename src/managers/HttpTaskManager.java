@@ -1,8 +1,6 @@
 package managers;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import constant.Status;
 import constant.TaskType;
@@ -12,7 +10,6 @@ import domain.Task;
 import server.KVTaskClient;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -64,23 +61,23 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
     public void loadFromFile(){
         try {
-            Type type = new TypeToken<Map<Integer, ? extends Task>>(){}.getType();
 
             String taskInString=kvTaskClient.load("tasks");
             if (!taskInString.isBlank()) {
-                tasks = gson.fromJson(taskInString, type);
+                tasks = gson.fromJson(taskInString, new TypeToken<Map<Integer, Task>>(){}.getType());
             }
             String epicInString=kvTaskClient.load("epics");
             if(!epicInString.isBlank()) {
-                epics = gson.fromJson(epicInString, type);
+                epics = gson.fromJson(epicInString, new TypeToken<Map<Integer, Epic>>(){}.getType());
             }
             String subtaskInString=kvTaskClient.load("subtasks");
             if (!subtaskInString.isBlank()) {
-                subtasks = gson.fromJson(subtaskInString, type);
+                subtasks = gson.fromJson(subtaskInString, new TypeToken<Map<Integer, Subtask>>(){}.getType());
             }
             String historyInString=kvTaskClient.load("history");
             if (!historyInString.isBlank()) {
-                history = gson.fromJson(historyInString, type);
+                List<Task> historyTaskInMemory= gson.fromJson(historyInString, new TypeToken<List<Task>>(){}.getType());
+                history.setSortedHistoryTask(historyTaskInMemory);
             }
 
 

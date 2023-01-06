@@ -2,9 +2,14 @@ package managers;
 
 import constant.Status;
 import constant.TaskType;
-import domain.*;
+import domain.Epic;
+import domain.Subtask;
+import domain.Task;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,7 +19,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
@@ -28,6 +32,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         loadFromFile(fileWithTasks);
     }
 
+    public static String historyToString(HistoryManager manager) {
+        StringBuilder tasksHistoryToString = new StringBuilder();
+        List<Integer> historyId = manager.getHistoryId();
+        for (Integer taskInHistory : historyId) {
+            tasksHistoryToString.append(taskInHistory).append(",");
+        }
+        return tasksHistoryToString.toString();
+    }
 
     public void save() {
         try (BufferedWriter fileTask = new BufferedWriter(new FileWriter(fileWithTasks, StandardCharsets.UTF_8))) {
@@ -54,17 +66,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
 
     }
-
-
-    public static String historyToString(HistoryManager manager) {
-        StringBuilder tasksHistoryToString = new StringBuilder();
-        List<Integer> historyId = manager.getHistoryId();
-        for (Integer taskInHistory : historyId) {
-            tasksHistoryToString.append(taskInHistory).append(",");
-        }
-        return tasksHistoryToString.toString();
-    }
-
 
     public void loadFromFile(File file) {
         String path = file.getPath();

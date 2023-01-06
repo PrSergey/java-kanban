@@ -34,6 +34,10 @@ public class Subtask extends Task {
         return epicId;
     }
 
+    public void setEpicId(int epicId) {
+        this.epicId = epicId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -46,10 +50,6 @@ public class Subtask extends Task {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), epicId);
-    }
-
-    public void setEpicId(int epicId) {
-        this.epicId = epicId;
     }
 
     @Override

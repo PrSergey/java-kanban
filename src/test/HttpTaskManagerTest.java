@@ -1,14 +1,12 @@
 package test;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import constant.Status;
 import constant.TaskType;
 import domain.Epic;
 import domain.Subtask;
 import managers.Managers;
+import managers.TaskManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +50,7 @@ public class HttpTaskManagerTest {
         server = new HttpTaskServer();
         server.start();
         client = HttpClient.newHttpClient();
-        ;
+
     }
 
     @AfterEach
@@ -98,6 +96,8 @@ public class HttpTaskManagerTest {
         HttpRequest requestSubtask = HttpRequest.newBuilder().uri(urlSubtask).POST(HttpRequest.BodyPublishers.ofString(newSubtaskJson)).build();
         HttpResponse<String> responseSubtask = client.send(requestSubtask, HttpResponse.BodyHandlers.ofString());
         Assertions.assertEquals(server.getManager().getAllTasks().size(), 2);
+        TaskManager secondManager = Managers.getDefaultFile("http://localhost:8078");
+        Assertions.assertEquals(secondManager.getAllTasks(), server.getManager().getAllTasks());
     }
 
 

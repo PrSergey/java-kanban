@@ -2,12 +2,9 @@ package server;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class KVTaskClient {
 

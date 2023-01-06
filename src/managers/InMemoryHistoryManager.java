@@ -4,7 +4,6 @@ import domain.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import java.util.List;
 import java.util.Map;
 
@@ -17,10 +16,13 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     List<Integer> historyId = new ArrayList<>();
 
-
     public List<Task> getSortedHistoryTask() {
         getHistoryTasks();
         return sortedHistoryTask;
+    }
+
+    public void setSortedHistoryTask(List<Task> sortedHistoryTask) {
+        this.sortedHistoryTask = sortedHistoryTask;
     }
 
     public List<Integer> getHistoryId() {
