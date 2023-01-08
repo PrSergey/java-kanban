@@ -98,8 +98,9 @@ public class HttpTaskManagerTest {
         Assertions.assertEquals(server.getManager().getAllTasks().size(), 2);
         TaskManager secondManager = Managers.getDefaultFile("http://localhost:8078");
         Assertions.assertEquals(secondManager.getAllTasks(), server.getManager().getAllTasks());
+        Assertions.assertEquals(secondManager.getHistory().getHistoryTasks().size(), 2);
+        Assertions.assertEquals(secondManager.getHistory().getHistoryTasks(), server.getManager().getHistory().getHistoryTasks());
     }
-
 
 }
 

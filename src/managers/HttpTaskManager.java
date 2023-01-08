@@ -49,7 +49,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
             }
             if (!history.getHistoryTasks().isEmpty()) {
-                String historyText = gson.toJson(history.getHistoryTasks());
+                String historyText = gson.toJson(historyToString(history));
                 kvTaskClient.put("history", historyText);
             }
 
@@ -74,17 +74,16 @@ public class HttpTaskManager extends FileBackedTasksManager {
             if (!subtaskInString.isBlank()) {
                 subtasks = gson.fromJson(subtaskInString, new TypeToken<Map<Integer, Subtask>>(){}.getType());
             }
-            String historyInString=kvTaskClient.load("history");
+            String historyInString = kvTaskClient.load("history");
             if (!historyInString.isBlank()) {
-                List<Task> historyTaskInMemory= gson.fromJson(historyInString, new TypeToken<List<Task>>(){}.getType());
-                history.setSortedHistoryTask(historyTaskInMemory);
+                String historyTasksId=gson.fromJson(historyInString, String.class);
+                addTaskInHistoryFromString(historyTasksId);
             }
-
-
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public void addTask(Task task) {
